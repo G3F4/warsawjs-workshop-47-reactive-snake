@@ -1,0 +1,9 @@
+.gridRow {
+  display: flex;
+}
+
+.gridCell {
+  width: 25px;
+  height: 25px;
+  border: solid;
+}
