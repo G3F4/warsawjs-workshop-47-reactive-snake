@@ -122,6 +122,7 @@ W pliku dodaj następujące style:
 .gridCell {
   width: 25px;
   height: 25px;
-  border: solid;
 }
 ```
+
+### Wyświetlanie węża i owocu
