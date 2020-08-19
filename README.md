@@ -126,3 +126,5 @@ W pliku dodaj następujące style:
 ```
 
 ### Wyświetlanie węża i owocu
+
+### Pętla gry i ruch węża
