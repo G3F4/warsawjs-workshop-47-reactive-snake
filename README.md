@@ -132,3 +132,5 @@ W pliku dodaj następujące style:
 ### Zmiana kierunku ruchu węża
 
 ### Zjadanie owocu i zwiększanie prędkości
+
+### Wydzielenie logiki gry do własnego hooka
