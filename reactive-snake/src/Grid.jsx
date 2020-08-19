@@ -19,7 +19,7 @@ export default function Grid({ gridSize, fruit, snake }) {
   }
 
   return (
-    <div>
+    <div className="grid">
       {indexes.map((x) => (
         <div className="gridRow" key={x}>
           {indexes.map((y) => (

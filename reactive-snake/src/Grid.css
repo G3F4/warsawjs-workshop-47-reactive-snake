@@ -1,3 +1,7 @@
+.grid {
+  border: solid 30px darkgray;
+}
+
 .gridRow {
   display: flex;
 }

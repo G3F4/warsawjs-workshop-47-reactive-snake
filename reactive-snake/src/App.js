@@ -17,7 +17,7 @@ function App() {
     x: randomIndex(gridSize),
     y: randomIndex(gridSize),
   });
-  const [speed, setSpeed] = useState(1000);
+  const [speed, setSpeed] = useState(500);
   const direction = useRef('up');
 
   useEffect(() => {
