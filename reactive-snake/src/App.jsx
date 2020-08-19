@@ -1,23 +1,35 @@
-import React, { useState } from 'react';
+import React, { useReducer } from 'react';
 import GameContext from './GameContext';
 import Game from './Game';
+import gameContextStateReducer from './gameContextStateReducer';
+
+const GridSize = 10;
+const SpeedIncreaseMultiplier = 0.8;
+const InitialGameContextState = { speed: 500, paused: true };
+
+function initGameContextState() {
+  return InitialGameContextState;
+}
 
 function App() {
-  const [speed, setSpeed] = useState(500);
-  const [paused, setPaused] = useState(true);
-  const gridSize = 10;
-  const gameContextValue = { speed, gridSize, paused, increaseSpeed, pauseGame, unpauseGame };
+  const [gameContextState, dispatchGameContextAction] = useReducer(
+    gameContextStateReducer,
+    InitialGameContextState,
+    initGameContextState,
+  );
+  const { paused, speed } = gameContextState;
+  const gameContextValue = { speed, gridSize: GridSize, paused, increaseSpeed, pauseGame, unpauseGame };
 
   function increaseSpeed() {
-    setSpeed(speed * 0.8);
+    dispatchGameContextAction({ type: 'increaseSpeed', payload: SpeedIncreaseMultiplier });
   }
 
   function pauseGame() {
-    setPaused(true);
+    dispatchGameContextAction({ type: 'pauseGame' });
   }
 
   function unpauseGame() {
-    setPaused(false);
+    dispatchGameContextAction({ type: 'unpauseGame' });
   }
 
   return (

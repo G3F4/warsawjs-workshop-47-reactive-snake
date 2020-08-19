@@ -1,10 +1,11 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import './GameGrid.css';
 
 export default function GameGrid({ gridSize, fruit, snake }) {
-  const indexes = Array
+  const indexes = useMemo(() => Array
     .from({ length: gridSize })
-    .map((_, index) => index);
+    .map((_, index) => index)
+  , [gridSize]);
 
   function getCellClass(x, y) {
     if (x === fruit.x && y === fruit.y) {

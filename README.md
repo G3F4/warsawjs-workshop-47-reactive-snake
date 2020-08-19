@@ -140,3 +140,5 @@ W pliku dodaj następujące style:
 ### Stworzenie kontekstu gry
 
 ### Pauzowanie gry i menu
+
+### Obsługa stanu kontekstu gry z wykorzystaniem reducera
