@@ -65,13 +65,13 @@ Na koniec weryfikujemy czy aplikacja dalej działa prawidłowo i w przeglądarce
 
 Podstawą gry będzie siatka, która będzie prezentować aktualny stan rozgrywki.
 Siatka gry będzie posiadać tyle samo kolumn co wierszy. 
-Na potrzeby zaprezentowania siatki gry stworzyć komponent `Grid`.
-Komponent umieścić w pliku o nazwie tej samej co komponent `Grid`.
-Komponent `Grid` powinien przyjmować jeden prop: `gridSize`.
-Pamiętaj o przekazaniu wartości propa podczas wykorzystania komponentu (dodaj `const gridSize = 10;` w komponencie `App` i przekaż jako propa do `Grid`).
+Na potrzeby zaprezentowania siatki gry stworzyć komponent `GameGrid`.
+Komponent umieścić w pliku o nazwie tej samej co komponent `GameGrid`.
+Komponent `GameGrid` powinien przyjmować jeden prop: `gridSize`.
+Pamiętaj o przekazaniu wartości propa podczas wykorzystania komponentu (dodaj `const gridSize = 10;` w komponencie `App` i przekaż jako propa do `GameGrid`).
 Deklaracja powinna wyglądać jak poniżej:
 ```jsx
-export default function Grid({ gridSize }) {
+export default function GameGrid({ gridSize }) {
   // tutaj będzie kod
 }
 ```
@@ -88,7 +88,7 @@ const indexes = Array
     .map((_, index) => index);
 ```
 Po utworzeniu tablicy z indeksami możemy stworzyć zawartość siatki.
-Komponent `Grid` zwraca na top levelu `div`, wewnątrz którego wykonujemy iterację po tablicy ideksów.
+Komponent `GameGrid` zwraca na top levelu `div`, wewnątrz którego wykonujemy iterację po tablicy ideksów.
 Dla każdego indeksu tworzymy `div` z klasą `gridRow`.
 Pamiętać o nadaniu `key` dla każdego wiersza.
 Każdy wiersz zawiera komórki.
@@ -111,7 +111,7 @@ Efektem działań powinien być kod analogiczny:
 </div>
 ```
 Aby stworzona struktura prawidłowo się wyświetlała musimy jeszcze dodać odpowiednie style dla wiersza i komórki.
-Stwórz plik `Grid.css`.
+Stwórz plik `GameGrid.css`.
 Zaimportuj go analogicznie jak jest to wykonane w pliku `App.js`.
 W pliku dodaj następujące style:
 ```css
@@ -136,3 +136,5 @@ W pliku dodaj następujące style:
 ### Wydzielenie logiki gry do własnego hooka
 
 ### Rozbicie logiki na wyspecjalizowane hooki
+
+### Stworzenie kontekstu gry

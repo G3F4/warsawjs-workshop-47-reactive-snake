@@ -1,7 +1,7 @@
 import React from 'react';
-import './Grid.css';
+import './GameGrid.css';
 
-export default function Grid({ gridSize, fruit, snake }) {
+export default function GameGrid({ gridSize, fruit, snake }) {
   const indexes = Array
     .from({ length: gridSize })
     .map((_, index) => index);
