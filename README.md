@@ -40,7 +40,7 @@ Odpalamy aplikację i weryfikujemy działanie w przeglądarce.
 yarn start
 ```
 Kolejnym krokiem jest wyczyszczenie zawartości obecnej aplikacji przykładowej.
-W tym celu otwieramy plik `reactive-snake/src/App.js`.
+W tym celu otwieramy plik `reactive-snake/src/App.jsx`.
 Kasujemy zawartość `div` z klasą `App` i wstawiamy tekst `tutaj będzie gra`.
 Komponent `App` powinien wyglądać jak poniżej:
 ```jsx
@@ -112,7 +112,7 @@ Efektem działań powinien być kod analogiczny:
 ```
 Aby stworzona struktura prawidłowo się wyświetlała musimy jeszcze dodać odpowiednie style dla wiersza i komórki.
 Stwórz plik `GameGrid.css`.
-Zaimportuj go analogicznie jak jest to wykonane w pliku `App.js`.
+Zaimportuj go analogicznie jak jest to wykonane w pliku `App.jsx`.
 W pliku dodaj następujące style:
 ```css
 .gridRow {

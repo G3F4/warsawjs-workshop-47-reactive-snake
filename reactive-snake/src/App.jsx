@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import './App.css';
 import GameContext from './GameContext';
 import Game from './Game';
 
@@ -13,9 +12,7 @@ function App() {
 
   return (
     <GameContext.Provider value={{ speed, gridSize, increaseSpeed }}>
-      <div className="App">
-        <Game />
-      </div>
+      <Game />
     </GameContext.Provider>
   );
 }
