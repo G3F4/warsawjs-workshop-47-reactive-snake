@@ -130,3 +130,5 @@ W pliku dodaj następujące style:
 ### Pętla gry i ruch węża
 
 ### Zmiana kierunku ruchu węża
+
+### Zjadanie owocu i zwiększanie prędkości
