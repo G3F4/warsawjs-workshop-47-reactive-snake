@@ -2,20 +2,20 @@ import React, {useEffect, useRef, useState} from 'react';
 import './App.css';
 import Grid from './Grid';
 
-function randomNumberFromZeroN(n) {
+function randomIndex(n) {
   return Math.floor(Math.random() * n);
 }
 
 function App() {
   const gridSize = 10;
   const [snake, setSnake] = useState([
-    { rowIndex: gridSize / 2, cellIndex: gridSize / 2 },
-    { rowIndex: gridSize / 2, cellIndex: gridSize / 2 + 1 },
-    { rowIndex: gridSize / 2, cellIndex: gridSize / 2 + 2 },
+    { x: gridSize / 2, y: gridSize / 2 },
+    { x: gridSize / 2, y: gridSize / 2 + 1 },
+    { x: gridSize / 2, y: gridSize / 2 + 2 },
   ]);
   const [fruit, setFruit] = useState({
-    rowIndex: randomNumberFromZeroN(gridSize),
-    cellIndex: randomNumberFromZeroN(gridSize),
+    x: randomIndex(gridSize),
+    y: randomIndex(gridSize),
   });
   const [speed, setSpeed] = useState(1000);
   const direction = useRef('up');
@@ -24,24 +24,25 @@ function App() {
     const interval = setInterval(() => {
       const [snakeHead] = snake;
       const newSnakeHead = { ...snakeHead };
-      const fruitEaten = fruit.cellIndex === newSnakeHead.cellIndex && fruit.rowIndex === newSnakeHead.rowIndex;
+
+      if (direction.current === 'up') {
+        newSnakeHead.x -= 1;
+      } else if (direction.current === 'down') {
+        newSnakeHead.x += 1;
+      } else if (direction.current === 'right') {
+        newSnakeHead.y += 1;
+      } else if (direction.current === 'left') {
+        newSnakeHead.y -= 1;
+      }
+
+      const fruitEaten = fruit.y === newSnakeHead.y && fruit.x === newSnakeHead.x;
 
       if (fruitEaten) {
         setFruit({
-          rowIndex: randomNumberFromZeroN(gridSize),
-          cellIndex: randomNumberFromZeroN(gridSize),
+          x: randomIndex(gridSize),
+          y: randomIndex(gridSize),
         });
         setSpeed(s => s * 0.9);
-      }
-
-      if (direction.current === 'up') {
-        newSnakeHead.rowIndex -= 1;
-      } else if (direction.current === 'down') {
-        newSnakeHead.rowIndex += 1;
-      } else if (direction.current === 'right') {
-        newSnakeHead.cellIndex += 1;
-      } else if (direction.current === 'left') {
-        newSnakeHead.cellIndex -= 1;
       }
 
       const newSnake = fruitEaten
@@ -54,17 +55,17 @@ function App() {
     return () => {
       clearInterval(interval);
     };
-  }, [speed, direction, snake]); // TODO wywalić zależność do snake z tego efektu
+  }, [speed, direction, snake, fruit]);
 
   function handleKeyDown(event) {
     if (event.key === 'ArrowUp') {
-      direction.current = 'up'
+      direction.current = 'up';
     } else if (event.key === 'ArrowDown') {
-      direction.current = 'down'
+      direction.current = 'down';
     } else if (event.key === 'ArrowLeft') {
-      direction.current = 'left'
+      direction.current = 'left';
     } else if (event.key === 'ArrowRight') {
-      direction.current = 'right'
+      direction.current = 'right';
     }
   }
 

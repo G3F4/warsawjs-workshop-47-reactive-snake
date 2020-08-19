@@ -99,11 +99,11 @@ Każda komórka na razie prezentuje tekst, który jest konkatenacją indeksu wie
 Efektem działań powinien być kod analogiczny:
 ```jsx
 <div>
-  {indexes.map((rowIndex) => (
-    <div className="gridRow" key={rowIndex}>
-      {indexes.map((cellIndex) => (
-        <div className="gridCell" key={`${rowIndex}x${cellIndex}`}>
-          {`${rowIndex}x${cellIndex}`}
+  {indexes.map((x) => (
+    <div className="gridRow" key={x}>
+      {indexes.map((y) => (
+        <div className="gridCell" key={`${x}x${y}`}>
+          {`${x}x${y}`}
         </div>
       ))}
     </div>
