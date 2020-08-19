@@ -138,3 +138,5 @@ W pliku dodaj następujące style:
 ### Rozbicie logiki na wyspecjalizowane hooki
 
 ### Stworzenie kontekstu gry
+
+### Pauzowanie gry i menu
