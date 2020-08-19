@@ -134,3 +134,5 @@ W pliku dodaj następujące style:
 ### Zjadanie owocu i zwiększanie prędkości
 
 ### Wydzielenie logiki gry do własnego hooka
+
+### Rozbicie logiki na wyspecjalizowane hooki
