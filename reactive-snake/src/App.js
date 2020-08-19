@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import './App.css';
 import Grid from './Grid';
 
@@ -18,20 +18,20 @@ function App() {
     cellIndex: randomNumberFromZeroN(gridSize),
   });
   const speed = 1000;
-  const direction = 'top';
+  const direction = useRef('up');
 
   useEffect(() => {
     const interval = setInterval(() => {
       const [snakeHead] = snake;
       const newSnakeHead = { ...snakeHead };
 
-      if (direction === 'top') {
+      if (direction.current === 'up') {
         newSnakeHead.rowIndex -= 1;
-      } else if (direction === 'bottom') {
+      } else if (direction.current === 'down') {
         newSnakeHead.rowIndex += 1;
-      } else if (direction === 'right') {
+      } else if (direction.current === 'right') {
         newSnakeHead.cellIndex += 1;
-      } else if (direction === 'left') {
+      } else if (direction.current === 'left') {
         newSnakeHead.cellIndex -= 1;
       }
 
@@ -44,6 +44,26 @@ function App() {
       clearInterval(interval);
     };
   }, [speed, direction, snake]); // TODO wywalić zależność do snake z tego efektu
+
+  function handleKeyDown(event) {
+    if (event.key === 'ArrowUp') {
+      direction.current = 'up'
+    } else if (event.key === 'ArrowDown') {
+      direction.current = 'down'
+    } else if (event.key === 'ArrowLeft') {
+      direction.current = 'left'
+    } else if (event.key === 'ArrowRight') {
+      direction.current = 'right'
+    }
+  }
+
+  useEffect(() => {
+    document.addEventListener('keydown', handleKeyDown);
+
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [])
 
   return (
     <div className="App">
