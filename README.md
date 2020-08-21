@@ -17,7 +17,8 @@ Tematem warsztatów jest klasyczna gra Snake.
     v12.16.3
     ```
 * Przygotować repozytorium na Github
-Wykonać `fork` tego repozytorium lub stworzyć nowe o takiej samej nazwie. Pobrać repozytorium.
+Stworzyć nowe repozytorium o nazwie `warsawjs-workshop-47-reactive-snake`.
+Pobrać repozytorium.
 
 ## Kroki
 
@@ -27,39 +28,38 @@ Poniżej znajdują się szczegółowe opisy zadań do wykonania w ramach warszta
 
 Pierwszym krokiem, jest stworzenie nowej aplikacji React.
 W tym celu należy wykorzystać paczkę NPM `create-react-app`.
+Przechodzimy do folderu z repozytorium.
 ```shell script
-npx create-react-app reactive-snake
+npx create-react-app warsawjs-workshop-47-reactive-snake
 ```
-Skrypt odpalamy w folderze z repozytorium. 
-Następnie przechodzimy do folderu `reactive-snake`.
+Wynikiem działania będzie nowy folder `warsawjs-workshop-47-reactive-snake` wewnątrz folderu z repozytorium.
+Kasujemy z niego pliki `README.md` and `.gitignore` a następnie pozostałą zawartość przenosimy do folderu repozytorium.
 ```shell script
-cd reactive-snake
+mv warsawjs-workshop-47-reactive-snake/* ./ && rm -rf warsawjs-workshop-47-reactive-snake/
 ```
 Odpalamy aplikację i weryfikujemy działanie w przeglądarce.
 ```shell script
 yarn start
 ```
 Kolejnym krokiem jest wyczyszczenie zawartości obecnej aplikacji przykładowej.
-W tym celu otwieramy plik `reactive-snake/src/App.jsx`.
+W tym celu otwieramy plik `src/App.jsx`.
 Kasujemy zawartość `div` z klasą `App` i wstawiamy tekst `tutaj będzie gra`.
-Komponent `App` powinien wyglądać jak poniżej:
+Kod pliku powinien wyglądać jak poniżej:
 ```jsx
+import React from 'react';
+
 function App() {
   return (
-    <div className="App">
+    <div>
       tutaj będzie gra
     </div>
   );
 }
-```
-Następnie przechodzimy do pliku ze stylami `reactive-snake/src/App.css` i kasujemy wszystkie reguły poza pierwszą. Na koniec plik powinien wyglądać jak poniżej:
-```css
-.App {
-  text-align: center;
-}
 
+export default App;
 ```
-Na koniec weryfikujemy czy aplikacja dalej działa prawidłowo i w przeglądarce widzimy wyśrodkowany napis.
+Kasujemy plik `src/App.css`.
+Na koniec weryfikujemy czy aplikacja dalej działa prawidłowo i w przeglądarce widzimy napis.
 
 ### Wyświetlenie siatki gry
 
