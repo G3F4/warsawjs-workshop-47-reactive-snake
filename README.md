@@ -398,12 +398,23 @@ Hook ten będzie zawierał całą logikę naszej gry.
 Dzięki temu kompletnie oddzielimy szablon od logiki.
 W folderze `game` stwórz plik `useState`.
 Plik ten eksportuje domyślnie funkcję o nazwie `useState`.
-Funkcja ta czeka na jeden argument w postaci obiektu zawierającego na razie jedno pole: gridSize.
+Funkcja ta czeka na jeden argument w postaci obiektu zawierającego na razie pola: `gridSize`, `speed` oraz `increaseSpeed`.
+Zwraca obiekt z polami: `fruit` i `snake`
 ```js
-export default function useGame({ gridSize }) {
+export default function useGame({ gridSize, speed, increaseSpeed }) {
   // logika gry przeniesiona z pliku App.js
 }
 ```
+Do utworzongo hooka przenosimy całą logikę z komponentu `App`.
+Zostawiamy jedynie stan prędkości. 
+Potrzebujemy takżę funkcji do zwiększania prędkości, której oczekuje hook.
+Definiujemy ją na poziomie komponentu `App` i przekazujemy do wywołania hooka `useGame` razem z prędkością i wielkością siatki.
+Następnie po przekopiowaniu kodu logiki z komponentu `App` do hooka `useGame`, dostosowujemy kod.
+Zmieniamy wszystkie odwołania do `GridSize` na `gridSize`.
+Linijke odpowiedzialną za zwiększenie prędkości zamieniamy wywołaniem funkcji `increaseSpeed`.
+Kasujemy nie używany stan prędkości.
+Stan prędkości zostawiamy w komponencie `App`.
+Po prawidłowo przeprowadzonej operacji aplikacja powinna działać bez zmian.
 
 ### Rozbicie logiki na wyspecjalizowane hooki
 
