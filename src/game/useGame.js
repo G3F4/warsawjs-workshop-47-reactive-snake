@@ -1,4 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
+import useGameDirection from './useGameDirection';
+import useGameLoop from './useGameLoop';
 
 function randomIndex(n) {
   return Math.floor(Math.random() * n);
@@ -14,61 +16,37 @@ export default function useGame({ gridSize, speed, increaseSpeed }) {
     x: randomIndex(gridSize),
     y: randomIndex(gridSize),
   });
-  const direction = useRef('up');
+  const direction = useGameDirection('up');
 
-  useEffect(() => {
-    const interval = setInterval(() => {
-      const [snakeHead] = snake;
-      const newSnakeHead = { ...snakeHead };
-      const fruitEaten = fruit.x === newSnakeHead.x && fruit.y === newSnakeHead.y;
+  function handleGameTick() {
+    const [snakeHead] = snake;
+    const newSnakeHead = { ...snakeHead };
+    const fruitEaten = fruit.x === newSnakeHead.x && fruit.y === newSnakeHead.y;
 
-      if (fruitEaten) {
-        setFruit({ x: randomIndex(gridSize), y: randomIndex(gridSize) });
-        increaseSpeed();
-      }
-
-      if (direction.current === 'up') {
-        newSnakeHead.x -= 1;
-      } else if (direction.current === 'down') {
-        newSnakeHead.x += 1;
-      } else if (direction.current === 'right') {
-        newSnakeHead.y += 1;
-      } else if (direction.current === 'left') {
-        newSnakeHead.y -= 1;
-      }
-
-      const newSnake = fruitEaten
-        ? [newSnakeHead, ...snake.slice(0, snake.length)]
-        : [newSnakeHead, ...snake.slice(0, snake.length - 1)];
-
-
-      setSnake(newSnake);
-    }, speed);
-
-    return () => {
-      clearInterval(interval);
-    };
-  }, [snake, speed]);
-
-  function handleKeyDown(event) {
-    if (event.key === 'ArrowUp') {
-      direction.current = 'up'
-    } else if (event.key === 'ArrowDown') {
-      direction.current = 'down'
-    } else if (event.key === 'ArrowLeft') {
-      direction.current = 'left'
-    } else if (event.key === 'ArrowRight') {
-      direction.current = 'right'
+    if (fruitEaten) {
+      setFruit({ x: randomIndex(gridSize), y: randomIndex(gridSize) });
+      increaseSpeed();
     }
+
+    if (direction === 'up') {
+      newSnakeHead.x -= 1;
+    } else if (direction === 'down') {
+      newSnakeHead.x += 1;
+    } else if (direction === 'right') {
+      newSnakeHead.y += 1;
+    } else if (direction === 'left') {
+      newSnakeHead.y -= 1;
+    }
+
+    const newSnake = fruitEaten
+      ? [newSnakeHead, ...snake.slice(0, snake.length)]
+      : [newSnakeHead, ...snake.slice(0, snake.length - 1)];
+
+
+    setSnake(newSnake);
   }
 
-  useEffect(() => {
-    document.addEventListener('keydown', handleKeyDown);
-
-    return () => {
-      document.removeEventListener('keydown', handleKeyDown);
-    };
-  }, []);
+  useGameLoop({ speed, onTick: handleGameTick });
 
   return { fruit, snake };
 }

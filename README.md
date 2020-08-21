@@ -418,6 +418,42 @@ Po prawidłowo przeprowadzonej operacji aplikacja powinna działać bez zmian.
 
 ### Rozbicie logiki na wyspecjalizowane hooki
 
+Kolejną właściwością hooków jest możliwość kompozycji logiki.
+Nasz główny hook, przechowujący logikę gry posiada wymieszaną logikę.
+Wydzielimy z niego kod reprezentujący pętlę gry oraz obsługę zmiany kierunku.
+W tym celu utworzomy dwa nowe hooki i wykorzystamy je wewnątrz hooka `useGame`.
+Pierwszym będzie hook `useGameDirection`.
+Utwórz w folderze `game` plik o nazwie `useGameDirection.js`.
+Plik ten eksportuje domyślnie jedną funckję o nazwie `useGameDirection`.
+Przenieś do niego tworzenie zmiennej `direction` oraz kod związany z obsługą zdarzenia klawiatury.
+Hook ma zwracać aktualny kierunek.
+```js
+return direction.current;
+```
+Wykorzystaj hook w `useGame`.
+Zwróć uwagę że hook `useDirection` nie zwraca obiektu z kluczem `current` tylko płasko aktualny kierunek.
+Popraw odpowiednio kod w `useGame`.
+Następnie utwórz plik `useGameLoop`.
+Wydzielimy do niego logikę związaną z pętlą gry.
+Plik jak każdy inny hook, eksportuje domyślnie funkcję o nazwie `useGameLoop`.
+Jako argument przyjmuje obiekt z polami: `speed` oraz `onTick`.
+Hook nic nie zwraca.
+```js
+export default function useGameLoop({ onTick, speed }) {
+  useEffect(() => {
+    const interval = setInterval(onTick, speed);
+
+    return () => {
+      clearInterval(interval);
+    };
+  }, [speed, onTick]);
+}
+```
+Hook wykona w odpowiednim interwale kod przekazany w polu `onTick`.
+Następnie wewnątrz hooka `useGame`, stworzyć funkcję `handleGameTick`.
+Funkcja nie przyjmuje żadnych argumentów oraz nic nie zwraca.
+W jej ciele umieść kod, który dotychczas był wykonywany podczas interwału.
+
 ### Stworzenie kontekstu gry
 
 ### Pauzowanie gry i menu
