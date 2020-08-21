@@ -170,6 +170,80 @@ W tym celu otwórzmy plik `index.css` i dodajmy styl dla elementu z id równym `
 W efekcie powinniśmy zobaczyć na ekranie przeglądarki wyśrodkowany kwadrat z szarym obramowaniem, wewnątrz którego jest wyświetlona siatka.
 
 ### Wyświetlanie węża i owocu
+Kolejnym zadaniem jest wyświetlenie węża i owocu na siatce.
+W tym celu wykorzystamy pierwszy hook `useState`.
+Pozwala on przechowywać stan komponentu i go zmieniać.
+Każda zmiana stanu komponentu skutkuje przerenderowaniem komponentu.
+Hook `useState` jako argument czeka na stan inicjalny.
+Może to być wartość albo funkcja zwracająca wartość (leniwa inicjalizacja).
+Hook zwraca tablicę z dwoma elementami.
+Pierwszy to aktualna wartość stanu.
+Drugi to funkcja do aktualizacji stanu.
+```js
+const [state, setState] = useState(init);
+```
+Dodajemy import `useState` do istniejącego importu React'a.
+Wykorzystamy ten hook to przechowywania pozycji węża i owocu.
+Stany te zdefiniujemy w komponencie `App`;
+Osobny stan dla pozycji węża i osobny dla pozycji owocu.
+Inicjalna pozycja węża powinna być gdzieś w środku siatki.
+Natomiast pozycja owocu powinna być losowa.
+```js
+const [snake, setSnake] = useState([
+    { x: GridSize / 2, y: GridSize / 2 },
+    { x: GridSize / 2, y: GridSize / 2 + 1 },
+    { x: GridSize / 2, y: GridSize / 2 + 2 },
+]);
+const [fruit, setFruit] = useState({
+    x: randomIndex(GridSize),
+    y: randomIndex(GridSize),
+});
+```
+Teraz brakuje nam losowanie indeksu. W tym celu dodajmy funkcję pomocniczą:
+```js
+function randomIndex(n) {
+  return Math.floor(Math.random() * n);
+}
+```
+Tak przygotowane dane możemy przekazać do komponentu siatki.
+```jsx
+<GameGrid gridSize={GridSize} fruit={fruit} snake={snake} />
+```
+Następnie przechodzimy do komponentu siatki `GameGrid`.
+Najpierw dodajemy w deklaracji komponentu dwa nowe propsy: `fruit` i `snake`:
+```jsx
+export default function GameGrid({ gridSize, fruit, snake }) {
+  // ...
+}
+```
+Aby na siatce wyświetlić węża i owoc będziemy dodawać do odpowiedniej komórki odpowiednie klasy css.
+Do pliku ze stylami dodać poniższe style:
+```css
+.snakeCell {
+    width: 30px;
+    height: 30px;
+    background-color: black;
+}
+
+.fruitCell {
+    width: 30px;
+    height: 30px;
+    background-color: green;
+}
+```
+Następnie w komponencie `GameGrid` dodamy funkcję `getCellClass`.
+Funkcja powinna przyjmować dwa argumenty: `x` i `y`, które reprezentują punkt siatki, dla którego chcemy wyliczyć klasę.
+Zwracać powinna klasę komórki siatki.
+Jeśli komórka jest na tej samej pozycji do owoc zwracamy `fruitCell`.
+Jeśli komórka jest w zbiorze komórek węża zwracamy `snakeCell`.
+Inaczej zwracamy `gridCell`.
+Po przygotowaniu wszystiego, zamieniamy `div` reprezentujący komórkę na:
+```jsx
+<div
+  className={getCellClass(x, y)}
+  key={`${x}x${y}`}
+/>
+```
 
 ### Pętla gry i ruch węża
 
