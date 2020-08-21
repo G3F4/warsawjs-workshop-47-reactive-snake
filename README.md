@@ -610,5 +610,3 @@ Hook jako argument czeka na handler, który zostanie wywołany w przypadku gdy z
 Wywołujemy hook na poziomie `useGame`.
 Ostatnią rzeczą jest zablokowanie ruchu węża gdy stan gry to pauza.
 W tym celu owrapuj logikę porusza węża w `if` gdzie warunkie jest to czy gra jest niezapuzowana.
-
-### Obsługa stanu kontekstu gry z wykorzystaniem reducera
