@@ -1,12 +1,14 @@
-import { useEffect, useRef, useState } from 'react';
+import { useContext, useState } from 'react';
 import useGameDirection from './useGameDirection';
 import useGameLoop from './useGameLoop';
+import GameContext from './GameContext';
 
 function randomIndex(n) {
   return Math.floor(Math.random() * n);
 }
 
-export default function useGame({ gridSize, speed, increaseSpeed }) {
+export default function useGame() {
+  const { gridSize, speed, increaseSpeed  } = useContext(GameContext);
   const [snake, setSnake] = useState([
     { x: gridSize / 2, y: gridSize / 2 },
     { x: gridSize / 2, y: gridSize / 2 + 1 },

@@ -456,6 +456,53 @@ W jej ciele umieść kod, który dotychczas był wykonywany podczas interwału.
 
 ### Stworzenie kontekstu gry
 
+W bardziej złożonych aplikacjach często przekazujemy głęboko propsy.
+Może to powodować, że komponenty przyjmują bardzo dużo propsów, co utrudnia utrzymanie komponentów.
+Jednym z rozwiązań tego problemu jest wykorzystanie kontekstu.
+Kontekst jest abstrakcją, która umożliwia przechowywaniu danych w łatwo dostępnym miejscu.
+Do kontekstu mają dostęp wszystkie komponenty potomne.
+Kontest jest zawsze występuje w parze.
+Pierwszym elementem jest tak zwany `Provider`, odpowiedzialny na przechowywanie danych, które będę udostępnione komponentom pochodnym.
+Drugi jest tak zwany `Consumer`. Ten występuje w 2 postaciach: komponentu oraz hooka.
+Podczas warsztatów wykorzystamy `Consumer` w postaci hooka.
+W naszej aplikacji wydzielimy 2 dane jako kontekst aplikacji: prędkość gry oraz wielkość siatki.
+Zaczniemy od utworzenie pliku `GameContext.js`, w którym zdefiniujemy nowy kontekst.
+Do stworzenia kontekstu potrzebna jest funkcja pomocnicza z biblioteki `React` o nazwie `createContext`.
+Funkcja przyjmuje jeden argument, który reprezentuje inicjalny stan kontekstu.
+```js
+import { createContext } from 'react';
+
+const GameContext = createContext({ gridSize: 0, speed: 0, increaseSpeed: () => {} });
+
+export default GameContext;
+```
+Następnie stworzymy nowy komponent `Game`.
+Jego zadaniem będzie wywołanie hooka `useGame` oraz wyświetlenie komponentu `GameGrid`.
+Aby pobrać dane z kontekstu potrzebny będzie kolejny hook `useContext`.
+Jako argument czeka na obiekt konktestu.
+Zwraca wartość odostepnianą przez kontekst.
+```jsx
+export default function Game() {
+  const { gridSize, speed, increaseSpeed  } = useContext(GameContext);
+  const { fruit, snake } = useGame({ gridSize, speed, increaseSpeed });
+
+  return (
+    <GameGrid gridSize={gridSize} fruit={fruit} snake={snake} />
+  )
+}
+```
+Następnie w komponencie `App` dodajemy `Provider` kontektu.
+```jsx
+return (
+  <GameContext.Provider value={{ speed, gridSize, increaseSpeed }}>
+    <Game />
+  </GameContext.Provider>
+);
+```
+Od tej pory komponent `Game` oraz wszystkie potomne mają dostęp do danych przechowywanych w kontekście.
+Hook `useGame` może pobrać sam wartości z kontekstu, zamiast czekać na przekazanie w argumencie.
+Skasujmy argumenty i zamieńmy je wywołaniem kontekstu na poziomie hooka.
+
 ### Pauzowanie gry i menu
 
 ### Obsługa stanu kontekstu gry z wykorzystaniem reducera
