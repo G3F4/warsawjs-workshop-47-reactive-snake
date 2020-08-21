@@ -390,6 +390,21 @@ W przypadku gdy wąż zje owoc, po prostu nie skracamy węża po dodaniu nowej g
 
 ### Wydzielenie logiki gry do własnego hooka
 
+Największą zaletą hooków jest możliwość tworzenia własnych hooków.
+Dzięki temu enkapsulacja oraz reużywalność kodu jest o wiele łatwiejsza i przyjemniejsza.
+Każdy hook musi zachować odpowiednie nazewnitctwo, czyli zaczynać się od prefixa `use`.
+Pierwszym hookiem jakiego stworzymy będzie hook `useGame`.
+Hook ten będzie zawierał całą logikę naszej gry.
+Dzięki temu kompletnie oddzielimy szablon od logiki.
+W folderze `game` stwórz plik `useState`.
+Plik ten eksportuje domyślnie funkcję o nazwie `useState`.
+Funkcja ta czeka na jeden argument w postaci obiektu zawierającego na razie jedno pole: gridSize.
+```js
+export default function useGame({ gridSize }) {
+  // logika gry przeniesiona z pliku App.js
+}
+```
+
 ### Rozbicie logiki na wyspecjalizowane hooki
 
 ### Stworzenie kontekstu gry
