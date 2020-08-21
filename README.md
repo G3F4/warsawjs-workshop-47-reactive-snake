@@ -65,14 +65,49 @@ Na koniec weryfikujemy czy aplikacja dalej działa prawidłowo i w przeglądarce
 
 Podstawą gry będzie siatka, która będzie prezentować aktualny stan rozgrywki.
 Siatka gry będzie posiadać tyle samo kolumn co wierszy. 
+Cały kod związany z grą umieścimy w folderze `src/game`. Utwórz folder.
+```shell script
+mkdir src/game
+```
 Na potrzeby zaprezentowania siatki gry stworzyć komponent `GameGrid`.
-Komponent umieścić w pliku o nazwie tej samej co komponent `GameGrid`.
+Komponent umieścić w pliku o nazwie `GameGrid.jsx`.
+```shell script
+touch src/game/GameGrid.jsx
+```
+Każdy plik z kodem JSX musi importować `React`. 
+Dodaj import React.
+```js
+import React from 'react';
+```
+Komponent będzie posiadał własne style, więc obok stwórzmy też plik `GameGrid.css`.
+```shell script
+touch src/game/GameGrid.css
+```
+Następnie uzupełnij arkusz styli poniższymi stylami:
+```css
+.grid {
+    border: solid 30px darkgray;
+}
+
+.gridRow {
+    display: flex;
+}
+
+.gridCell {
+    width: 30px;
+    height: 30px;
+    background-color: azure;
+}
+```
+Dodać import arkusza styli w pliku z komponentem.
+```js
+import './GameGrid.css';
+```
 Komponent `GameGrid` powinien przyjmować jeden prop: `gridSize`.
-Pamiętaj o przekazaniu wartości propa podczas wykorzystania komponentu (dodaj `const gridSize = 10;` w komponencie `App` i przekaż jako propa do `GameGrid`).
 Deklaracja powinna wyglądać jak poniżej:
 ```jsx
 export default function GameGrid({ gridSize }) {
-  // tutaj będzie kod
+  return <></>;
 }
 ```
 Następnie wewnątrz komponentu należy stworzyć tablicę zawierającą indeksy wierszy i komórek w wierszach.
@@ -81,14 +116,14 @@ Tablica z indeksami powinna zawierać `gridSize` elementów.
 Aby utworzyć tablicę możemy wykorzystać funkcję `Array.from`.
 Jako argument przekazujemy obiekt z jednym kluczem `length` i wartości `gridSize`.
 Wynikiem będzie tablica z pustymi elementami.
-Następnie należy przeiterować się po utworzonej tablicy i wykorzystać podczas iteracji drugi argument, który reprezentuje indeks aktualnie iterowanego elementu.
+Następnie należy przeiterować się po utworzonej tablicy i wykorzystać podczas iteracji drugi argument, który reprezentuje indeks aktualnie iterowanego elementu do wypełnienia elementów tablicy.
 ```js
 const indexes = Array
     .from({ length: gridSize })
     .map((_, index) => index);
 ```
 Po utworzeniu tablicy z indeksami możemy stworzyć zawartość siatki.
-Komponent `GameGrid` zwraca na top levelu `div`, wewnątrz którego wykonujemy iterację po tablicy ideksów.
+Komponent `GameGrid` zwraca `div`, wewnątrz którego wykonujemy iterację po tablicy indeksów.
 Dla każdego indeksu tworzymy `div` z klasą `gridRow`.
 Pamiętać o nadaniu `key` dla każdego wiersza.
 Każdy wiersz zawiera komórki.
@@ -110,20 +145,29 @@ Efektem działań powinien być kod analogiczny:
   ))}
 </div>
 ```
-Aby stworzona struktura prawidłowo się wyświetlała musimy jeszcze dodać odpowiednie style dla wiersza i komórki.
-Stwórz plik `GameGrid.css`.
-Zaimportuj go analogicznie jak jest to wykonane w pliku `App.jsx`.
-W pliku dodaj następujące style:
+Tak stworzony komponent możemy wykorzystać w `src/App.js`.
+Jednak do dziania siatka gry potrzebuje zdefiniowanego rozmiaru.
+Dodajmy stałą reprezentującą wielkość siatki w pliku `src/App.js` na poziomie całego pliku, nie wewnątrz komponentu `App`.
+```js
+const GridSize = 10;
+```
+Następnie zmieniamy kod komponentu `App` tak, aby zamiast `div` zwracał `GameGrid`.
+```jsx
+return (
+  <GameGrid gridSize={GridSize} />
+);
+```
+Na koniec chcemy dodać pare styli do kontenera aplikacji aby siatka gry wyświetlała się na środku ekranu.
+W tym celu otwórzmy plik `index.css` i dodajmy styl dla elementu z id równym `root`.
 ```css
-.gridRow {
+#root {
   display: flex;
-}
-
-.gridCell {
-  width: 25px;
-  height: 25px;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
 }
 ```
+W efekcie powinniśmy zobaczyć na ekranie przeglądarki wyśrodkowany kwadrat z szarym obramowaniem, wewnątrz którego jest wyświetlona siatka.
 
 ### Wyświetlanie węża i owocu
 
