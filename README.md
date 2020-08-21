@@ -505,4 +505,110 @@ Skasujmy argumenty i zamieńmy je wywołaniem kontekstu na poziomie hooka.
 
 ### Pauzowanie gry i menu
 
+Dodamy do gry menu oraz zatrzymamy ruch węża podczas wyświetlania mene.
+Na początek rozszerz kontekst gry o nowe pola: `pause`, `pauseGame`, `unpauseGame` i nadaj im inicjalne wartości:
+```js
+const GameContext = createContext({
+  gridSize: 0,
+  speed: 0,
+  paused: true,
+  pauseGame: () => {},
+  unpauseGame: () => {},
+  increaseSpeed: () => {},
+});
+```
+Następnie a komponencie `App` dodajemy nowy stan reprezentujący czy gra jest w stanie pauzy.
+Inicjalnie gra jest zapauzowana.
+```js
+const [paused, setPaused] = useState(true);
+```
+Potrzebne będą także dwie funkcje pomocnicze do aktualizacji pauzy:
+```js
+function pauseGame() {
+  setPaused(true);
+}
+
+function unpauseGame() {
+  setPaused(false);
+}
+```
+Przekaż nowe wartości do kontekstu.
+Następnie stwórz plik `GameMenu.js` a wewnątrz komponent z menu:
+```jsx
+import React, { useContext } from 'react';
+import GameContext from './GameContext';
+import './GameGrid.css';
+
+export default function GameMenu() {
+  const { unpauseGame } = useContext(GameContext);
+
+  return (
+    <div className="gameMenu">
+      <div className="gameMenuOverlay" />
+      <div className="gameMenuContent">
+        <button onClick={unpauseGame}>PLAY</button>
+      </div>
+    </div>
+  );
+}
+```
+Komponent wykorzystuje arkusz styli. Dodaj go:
+```css
+.gameMenu {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.gameMenuOverlay {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: black;
+  opacity: .5;
+}
+
+.gameMenuContent {
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: white;
+  padding: 50px;
+}
+```
+Na ten moment brakuje możliwości włączenia pauzy.
+Zrealizujemy to za pomocą wykrywania wciśnięcia klawisza spacji.
+W tym celu stworzymy kolejny hook `useSpaceDownEvent`.
+Stwórz plik `useSpaceDownEvent.js` a wewnątrz niego dodaj kod:
+```js
+import { useEffect } from 'react';
+
+export default function useSpaceDownEvent(handler) {
+  useEffect(() => {
+    function handleKeyDown(event) {
+      if (event.keyCode === 32) {
+        handler();
+      }
+    }
+
+    document.addEventListener('keydown', handleKeyDown);
+
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [handler]);
+} 
+```
+Hook jako argument czeka na handler, który zostanie wywołany w przypadku gdy zostanie wciśnięta spacja.
+Wywołujemy hook na poziomie `useGame`.
+Ostatnią rzeczą jest zablokowanie ruchu węża gdy stan gry to pauza.
+W tym celu owrapuj logikę porusza węża w `if` gdzie warunkie jest to czy gra jest niezapuzowana.
+
 ### Obsługa stanu kontekstu gry z wykorzystaniem reducera
