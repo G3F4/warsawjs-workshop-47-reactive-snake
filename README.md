@@ -362,6 +362,31 @@ Wewnątrz funkcji w zależności od tego, jaka strzałka została wciśnięta, c
 Po zaimplementowaniu tej funkcji, sprawdź aplikację w przeglądarce.
 
 ### Zjadanie owocu i zwiększanie prędkości
+Kolejną funkcjonalnością jaką dodamy jest możliwość zjedzenia owocu.
+Po zjedzeniu owocu, owoc powinien pojawić się w nowym losowym miejscu.
+Długość węża wzrasta o 1 po zjedzeniu owocu.
+Prędkość gry wzrasta po zjedzeniu owocu.
+
+Pracę rozpoczniemy od zdefiniowania na poziomie pliku `App.js` stałej reprezentującej mnożnik prędkości.
+```js
+const SpeedMultiplier = 0.8;
+```
+Następnie stałą `speed` zamienimy na stan wykorzystując `useState`:
+```js
+const [speed, setSpeed] = useState(500);
+```
+Teraz w efekcie odpowiedzialnym za aktualizacją pozycji węża, dodamy sprawdzenie, czy nowa głowa nie jest w tej samej pozycji co owoc. 
+Jeśli jest, wiemy że wąż właśnie zjadł owoc.
+Wartość tego wyliczenia przypiszemy do stałej:
+```js
+const fruitEaten = fruit.x === newSnakeHead.x && fruit.y === newSnakeHead.y;
+```
+Następnie w przypadku gdy owoc został zjedzony chcemy ustalić nową pozycję owocu oraz zwiększyć prędkość.
+Nową pozycję owocu wyliczamy analogicznie do inicjalizacji hooka przechowujacego stan owocu.
+Aby zwiększyć prędkość, mnożymy aktulną prędkość razy `SpeedMultiplier` i aktualizujemy stan prędkości.
+Na koniec zostaje nam dodanie nowego elementu węża w przypadku gdy zjadł owoc.
+Aktualnie podczas zmiany pozycji węża, po dodaniu nowej głowy, skracamy węża o jeden element(ostatni).
+W przypadku gdy wąż zje owoc, po prostu nie skracamy węża po dodaniu nowej głowy.
 
 ### Wydzielenie logiki gry do własnego hooka
 

@@ -7,12 +7,12 @@ export default function GameGrid({ gridSize, fruit, snake }) {
     .map((_, index) => index);
 
   function getCellClass(x, y) {
-    if (x === fruit.x && y === fruit.y) {
-      return 'fruitCell';
-    }
-
     if (snake.some(snakePart => snakePart.x === x && snakePart.y === y)) {
       return 'snakeCell';
+    }
+
+    if (x === fruit.x && y === fruit.y) {
+      return 'fruitCell';
     }
 
     return 'gridCell';
