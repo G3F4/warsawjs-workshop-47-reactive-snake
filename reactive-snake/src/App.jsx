@@ -1,7 +1,7 @@
 import React, { useReducer } from 'react';
-import GameContext from './GameContext';
-import Game from './Game';
-import gameContextStateReducer from './gameContextStateReducer';
+import GameContext from './game/GameContext';
+import Game from './game/Game';
+import gameContextStateReducer from './game/gameContextStateReducer';
 
 const GridSize = 10;
 const SpeedIncreaseMultiplier = 0.8;
@@ -18,7 +18,7 @@ function App() {
     initGameContextState,
   );
   const { paused, speed } = gameContextState;
-  const gameContextValue = { speed, gridSize: GridSize, paused, increaseSpeed, pauseGame, unpauseGame };
+  const gameContextValue = { gridSize: GridSize, speed, paused, increaseSpeed, pauseGame, unpauseGame };
 
   function increaseSpeed() {
     dispatchGameContextAction({ type: 'increaseSpeed', payload: SpeedIncreaseMultiplier });
