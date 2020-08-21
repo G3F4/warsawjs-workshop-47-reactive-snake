@@ -322,8 +322,44 @@ setSnake(newSnake);
 ```
 Sprawdź w przeglądarce działanie aplikacji.
 Wąż powinien poruszać się w kierunku określonym w stałej `direction`;
+Przetestuj ruch we wszystkich kierunkach zmieniając wartość stałej `direction`.
 
 ### Zmiana kierunku ruchu węża
+
+Następnym zadaniem jest obsługa zmiany kierunku ruchu węża w odpowiedzi na wciśnięcie na klawiaturze strzałek.
+Zmiana kierunku węża, nie powinna powodować odświeżenia ekranu.
+W tym celu wykorzystamy kolejny hook `useRef`.
+Jest to hook pozwalający przechowywać dane, analigicznie jak `useState`, z tą różnicą że zmiana wartości nie będzie powodować przerenderowania aplikacji.
+Wartość zmiennej przechowywanej przez `useRef` możemy zmienić przez referencję.
+Hook `useRef` zwraca jedną wartość, jest to obiekt z pojedynczym polem `current`, w którym jest dostępna aktualnie przechowywana wartość.
+W naszej aplikacji wykorzystanie `useState` do obsługi zmiany kierunku, powodowałoby że po wciśnięciu strzałki od razu nastąpiło by odświeżenie pozycji węża z nowym kierunkiem.
+Dodajemy import `useRef` do istniejącego importu React'a.
+Rozpoczniemy od zmiany stałej `direction`, tak aby jej wartość była przechowywana jako zmienna przez hook `useRef`.
+```js
+const direction = useRef('up');
+```
+Następnie musimy poprawić kod w miejscach gdzie wcześniej wykorzystaliśmy `direction`, tak aby teraz zamiast bezpośrednio odnosić się do `direction` teraz odnosić się do `diretion.currect`.
+Po zmianach aplikacja powinna działać bez różnicy.
+Następnie dodamy obsługę zmiany kierunku, po naciśnięciu jednej ze strzałek na klawiaturze.
+W tym celu znowu wykorzystamy hook `useEffect`.
+Aby obsłużyć zdarzenie klawiatury dodamy nasłuchiwanie na dokumencie.
+```js
+useEffect(() => {
+document.addEventListener('keydown', handleKeyDown);
+
+return () => {
+  document.removeEventListener('keydown', handleKeyDown);
+};
+}, []);
+```
+Brakuje nam teraz funkcji `handleKeyDown`.
+```js
+function handleKeyDown(event) {
+  // ustalenie jaki klawisz został wciśnięty i zmiana odpowiednio wartości `direction.current`
+}
+```
+Wewnątrz funkcji w zależności od tego, jaka strzałka została wciśnięta, chcemy mieć odpowiednio kierunek ruchu węża.
+Po zaimplementowaniu tej funkcji, sprawdź aplikację w przeglądarce.
 
 ### Zjadanie owocu i zwiększanie prędkości
 
