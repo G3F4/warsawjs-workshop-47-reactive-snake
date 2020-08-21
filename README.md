@@ -247,6 +247,82 @@ Po przygotowaniu wszystiego, zamieniamy `div` reprezentujący komórkę na:
 
 ### Pętla gry i ruch węża
 
+Kolejną rzeczą, jaką dodamy jest ruch węża.
+Na początek, bez możliwości zmiany kierunku.
+W tym celu wykorzystamy kolejny hook o nazwie `useEffect`.
+Służy on do obsługi zdarzeń, które powodują, tak zwane „efekty".
+Efektem jest taki fragment kodu, który modyfikuje w jakiś sposób stan aplikacji.
+W przypadku naszej aplikacji efektem będzie tick gry.
+Gra działa w określonej prędkości.
+Co jakiś czas, chcemy obliczyć nową pozycję węża.
+`useEffect` przyjmuje dwa argumenty. 
+Pierwszy to funkcja bez argumentów, która reprezentuje kod efektu.
+Drugi to tablica zależności efektu.
+Efekt jest odpalany zawsze inicjalne oraz gdy jakikolwiek z elementów tablicy zależności się zmienił.
+W naszej aplikacji chcemy, aby co określony czas nasz efekt się wykonał i zaktualizował pozycję węża.
+Będziemy potrzebować po pierwsze określić prędkość i kierunek ruchu węża.
+Zdefiniujmy na poziomie komponentu `App` dwie stałe reprezentujące te dane:
+```js
+const direction = 'up';
+const speed = 500;
+```
+Następnie dodajemy import `useEffect` do istniejącego importu React'a i wykorzystujemy go wewnątrz komponentu `App`.
+```js
+useEffect(() => {
+  // kod efektu
+}, [// lista zależności]);
+```
+Zależnością naszego efektu będzie pozycja węża.
+Następnie wewnątrz efektu, chcemy stworzyć interwał, który będzie odpalał się w odstępach, które reprezentuje stała `speed` (jest to czas w ms pomiędzy kolejnymi wyliczeniami pozycji węża).
+```js
+const interval = setInterval(() => {
+  // wyliczenia nowej pozycji węża w zależności od kierunku
+}, speed);
+```
+Ważnym aspektem działania efektów jest sprzątanie po nich. W naszej aplikacji za każdym razem, gdy zmieni się pozycja węża, będziemy tworzyć nowy interwał.
+Stary interwał należy wyczyścić, inaczej każde kolejne odświeżenie efektu, spowoduje stworzenie kolejnego, nowego interwału, co w efekcie spowoduje powielenie odświeżeń aplikacji.
+Aby posprzątać po efekcie, należy zwrócić z efektu funkcję.
+Funkcja zwrócona z efektu, jest wykonywana zawsze kiedy efekt przestaje być potrzebny - czyli kiedu go ponownie wywołujemy, wcześniej wywołamy sprzątanie.
+Nasz efekt powinien wyczyścić wcześniej stworzony interwał.
+W tym celu skorzystać możemy z funkcji `clearInterval`, która jako argument przyjmuje obiekt, zwrócony podczas tworzenia interwału.
+Nasz efekt powinien wyglądać tak:
+```js
+useEffect(() => {
+    const interval = setInterval(() => {
+      // tutaj wyliczymy nową pozycję węża
+    }, speed);
+    
+    return () => {
+      clearInterval(interval);
+    };
+}, [snake]);
+```
+Aby wyliczyć nową pozycję węża, musimy po pierwsze wyliczyć pozycję nowej głowy, oraz usunąć ostatnią cześć ciała węża.
+Aby pobrać pierwszy element z tablicy możemy skorzystać z destrukcji tablic:
+```js
+const [snakeHead] = snake;
+```
+Następnie potrzebujemy kopii głowy, która będzie reprezentować nową głowę węża.
+Do wykonania prostej kopii mozemy wykorzytać destrukcję obiektu:
+```js
+const newSnakeHead = { ...snakeHead };
+```
+Następnie w zależności od kierunku zmieniamy odpowiednio obiekt reprezentujący pozycję nowej głowy.
+Jeśli kierunek to `up` zmniejszamy `x` głowy o 1.
+Jeśli kierunek to `down` zwiększamy `x` głowy o 1.
+Jeśli kierunek to `left` zmniejszamy `y` głowy o 1.
+Jeśli kierunek to `right` zwiększamy `y` głowy o 1.
+Następnie tworzymy `const` do którego przypiszemy tablicę reprezentującą węża w nowej pozycji.
+```js
+const newSnake = [newSnakeHead, ...snake.slice(0, snake.length - 1)];
+```
+Na koniec aktualizujemy stan pozycji węża, co spowoduje odświeżenie ekranu.
+```js
+setSnake(newSnake);
+```
+Sprawdź w przeglądarce działanie aplikacji.
+Wąż powinien poruszać się w kierunku określonym w stałej `direction`;
+
 ### Zmiana kierunku ruchu węża
 
 ### Zjadanie owocu i zwiększanie prędkości
