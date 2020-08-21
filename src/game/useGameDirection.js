@@ -23,5 +23,5 @@ export default function useGameDirection(initialDirection) {
     };
   }, []);
 
-  return direction;
+  return direction.current;
 }

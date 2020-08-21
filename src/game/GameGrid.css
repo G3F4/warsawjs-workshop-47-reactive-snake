@@ -1,0 +1,25 @@
+.grid {
+    border: solid 30px darkgray;
+}
+
+.gridRow {
+    display: flex;
+}
+
+.gridCell {
+    width: 30px;
+    height: 30px;
+    background-color: azure;
+}
+
+.snakeCell {
+    width: 30px;
+    height: 30px;
+    background-color: black;
+}
+
+.fruitCell {
+    width: 30px;
+    height: 30px;
+    background-color: green;
+}

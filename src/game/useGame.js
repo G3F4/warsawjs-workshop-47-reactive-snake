@@ -1,4 +1,4 @@
-import { useCallback, useContext, useState } from 'react';
+import { useContext, useState } from 'react';
 import useGameDirection from './useGameDirection';
 import useGameLoop from './useGameLoop';
 import GameContext from './GameContext';
@@ -9,7 +9,7 @@ function randomIndex(n) {
 }
 
 export default function useGame() {
-  const { gridSize, paused, increaseSpeed, pauseGame } = useContext(GameContext);
+  const { gridSize, speed, paused, increaseSpeed, pauseGame } = useContext(GameContext);
   const [snake, setSnake] = useState([
     { x: gridSize / 2, y: gridSize / 2 },
     { x: gridSize / 2, y: gridSize / 2 + 1 },
@@ -19,42 +19,41 @@ export default function useGame() {
     x: randomIndex(gridSize),
     y: randomIndex(gridSize),
   });
-  useSpaceDownEvent(pauseGame);
   const direction = useGameDirection('up');
-  const handleGameTick = useCallback(() => {
+
+  useSpaceDownEvent(pauseGame);
+
+  function handleGameTick() {
     if (!paused) {
       const [snakeHead] = snake;
       const newSnakeHead = { ...snakeHead };
-
-      if (direction.current === 'up') {
-        newSnakeHead.x -= 1;
-      } else if (direction.current === 'down') {
-        newSnakeHead.x += 1;
-      } else if (direction.current === 'right') {
-        newSnakeHead.y += 1;
-      } else if (direction.current === 'left') {
-        newSnakeHead.y -= 1;
-      }
-
-      const fruitEaten = fruit.y === newSnakeHead.y && fruit.x === newSnakeHead.x;
+      const fruitEaten = fruit.x === newSnakeHead.x && fruit.y === newSnakeHead.y;
 
       if (fruitEaten) {
-        setFruit({
-          x: randomIndex(gridSize),
-          y: randomIndex(gridSize),
-        });
+        setFruit({ x: randomIndex(gridSize), y: randomIndex(gridSize) });
         increaseSpeed();
+      }
+
+      if (direction === 'up') {
+        newSnakeHead.x -= 1;
+      } else if (direction === 'down') {
+        newSnakeHead.x += 1;
+      } else if (direction === 'right') {
+        newSnakeHead.y += 1;
+      } else if (direction === 'left') {
+        newSnakeHead.y -= 1;
       }
 
       const newSnake = fruitEaten
         ? [newSnakeHead, ...snake.slice(0, snake.length)]
         : [newSnakeHead, ...snake.slice(0, snake.length - 1)];
 
+
       setSnake(newSnake);
     }
-  }, [direction, fruit, gridSize, paused, snake, increaseSpeed]);
+  }
 
-  useGameLoop(handleGameTick);
+  useGameLoop({ speed, onTick: handleGameTick });
 
-  return { fruit, snake }
+  return { fruit, snake };
 }
