@@ -4,7 +4,15 @@ WarsawJS Workshop 47 training repo
 ## Opis warsztatu
 Celem warsztatu jest poznanie biblioteki React.\
 Warsztat skupia się wyłącznie na czysto funkcyjnym aspekcie tworzenia UI (komponenty funkcyjne i hooki).\
-Tematem warsztatów jest klasyczna gra Snake.\
+Poznamy następujące zagadnienia:
+* hook `useState` - do obsługi stanu
+* hook `useEffect` - do obsługi efektów oraz synchronizacji
+* hook `useRef` - do obsługi zmiennych wartości
+* hook `useContext` - do obsługi kontekstu
+* pisanie własnych hooków
+* kompozycja hooków
+
+Podczas warsztatów stworzymy klasyczną grę — Snake.\
 Środowiskiem będzie Node z menadżerem pakietów NPM lub Yarn (w opisach będzie wykorzystywany Yarn).
 
 ## Przygotowanie
@@ -22,13 +30,16 @@ Pobrać repozytorium.
 
 ## Kroki
 
-Poniżej znajdują się szczegółowe opisy zadań do wykonania w ramach warsztatu.
+Poniżej znajdują się opisy zadań oraz szczegółowe kroki do wykonania w ramach warsztatu.
+Cały warsztat został podzielony w taki sposób, że każde zadanie to pojedyncze funkcjonalność dodana do aplikacji.
+Na początku każdego rozdziału jest opis zadania oraz hooka, który należy wykorzystać podczas realizacji zadania.
+Osoby czujące się na siłach pracować bardziej samodzielnie mogą korzystać jedynie z opisów, natomiast nie korzystać z kawałków kodu.
 
 ### Stworzenie aplikacji React
 
 Pierwszym krokiem, jest stworzenie nowej aplikacji React.\
 W tym celu należy wykorzystać paczkę NPM `create-react-app`.\
-Przechodzimy do folderu z repozytorium.
+Przechodzimy do folderu z repozytorium i wykonujemy poniższy skrypt w terminalu.
 ```shell script
 npx create-react-app warsawjs-workshop-47-reactive-snake
 ```
@@ -42,7 +53,7 @@ Odpalamy aplikację i weryfikujemy działanie w przeglądarce.
 yarn start
 ```
 Kolejnym krokiem jest wyczyszczenie zawartości obecnej aplikacji przykładowej.\
-W tym celu otwieramy plik `src/App.jsx`.\
+W tym celu otwieramy plik `src/App.js`.\
 Kasujemy zawartość `div` z klasą `App` i wstawiamy tekst `tutaj będzie gra`.\
 Kod pliku powinien wyglądać jak poniżej:
 ```jsx
@@ -59,25 +70,83 @@ function App() {
 export default App;
 ```
 Kasujemy plik `src/App.css`.\
-Na koniec weryfikujemy czy aplikacja dalej działa prawidłowo i w przeglądarce widzimy napis.
+Otwieramy plik `index.css` i dodajemy poniższe style do kontenera aplikacji:
+```css
+#root {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+```
+Dzięki stylom powyżej zawartość aplikacji będzie wyśrodkowana w pionie i poziomie.
+Na koniec weryfikujemy czy aplikacja dalej działa prawidłowo i w przeglądarce widzimy napis na środku okna.
 
 ### Wyświetlenie siatki gry
 
 Podstawą gry będzie siatka, która będzie prezentować aktualny stan rozgrywki.\
-Siatka gry będzie posiadać tyle samo kolumn co wierszy. \
-Cały kod związany z grą umieścimy w folderze `src/game`. Utwórz folder.
+Siatka gry będzie posiadać tyle samo kolumn co wierszy.\
+Elementami siatki będą komórki, które będziemy identyfikować po współrzędnych `x` oraz `y`.
+Cały kod związany z grą umieścimy w folderze `src/game`.\
+Utwórz folder.
 ```shell script
 mkdir src/game
 ```
 Na potrzeby zaprezentowania siatki gry stworzyć komponent `GameGrid`.\
-Komponent umieścić w pliku o nazwie `GameGrid.jsx`.
+Rozpocznij od stworzenia pliku o nazwie `GameGrid.jsx`.
 ```shell script
 touch src/game/GameGrid.jsx
 ```
-Każdy plik z kodem JSX musi importować `React`. \
-Dodaj import React.
+Każdy plik z kodem JSX musi importować `React`.\
+Dodaj import React na początku pliku `GameGrid.jsx`.
 ```js
 import React from 'react';
+```
+Następnie w pliku stwórz domyślnie eksportowaną funkcję o nazwie `GameGrid`, która będzie naszym komponentem.\
+Każdy komponent funkcyjny jako pierwszy argument otrzymuje obiekt reprezentujący propsy komponentu przekazane przez rodzica.\
+Komponent `GameGrid` powinien przyjmować jeden prop: `gridSize`.\
+Deklaracja powinna wyglądać jak poniżej:
+```jsx
+export default function GameGrid({ gridSize }) {
+  return <></>;
+}
+```
+Następnie wewnątrz komponentu należy stworzyć tablicę zawierającą indeksy wierszy i komórek w wierszach.\
+Poprzez indeks rozumiemy tutaj liczbę od `0` do `n`.\
+Ponieważ ilość wierszy jest równa ilości komórek w wierszu, wykorzystamy tablicę z indeksami do stworzenia wierszy i komórek wewnątrz.\
+Czyli po prostu chcemy stworzyć `n` elementów typu `div`, z których każdy posiada `n` dzieci.
+Tablica z indeksami powinna zawierać `gridSize` elementów.\
+Aby utworzyć tablicę na bazie liczby, możemy wykorzystać funkcję `Array.from`.\
+Jako argument przekazujemy obiekt z jednym kluczem `length` o wartości `gridSize`.\
+Wynikiem będzie tablica z pustymi elementami.\
+Następnie należy przeiterować się po utworzonej tablicy i wykorzystać podczas iteracji drugi argument, który reprezentuje indeks aktualnie iterowanego elementu do wypełnienia elementów tablicy.
+```js
+const indexes = Array
+    .from({ length: gridSize })
+    .map((_, index) => index);
+```
+Po utworzeniu tablicy z indeksami możemy stworzyć zawartość siatki.\
+Komponent `GameGrid` zwraca `div`, wewnątrz którego wykonujemy iterację po tablicy indeksów.\
+Dla każdego indeksu tworzymy `div` z klasą `gridRow`.\
+Pamiętać o nadaniu `key` dla każdego wiersza.\
+Każdy wiersz zawiera komórki.\
+Wewnątrz `div` reprezentującego wiersz wykonujemy jeszcze raz iterację po tablicy indeksów.\
+Podczas wewnętrznej iteracji tworzymy `div` z klasą `gridCell`.\
+Pamiętać o nadaniu `key` dla każdej komórki.\
+Każda komórka na razie prezentuje tekst, który jest konkatenacją indeksu wiersza i komórki, połączone znakiem `x`.\
+Efektem działań powinien być kod analogiczny:
+```jsx
+<div className="grid">
+  {indexes.map((x) => (
+    <div className="gridRow" key={x}>
+      {indexes.map((y) => (
+        <div className="gridCell" key={`${x}x${y}`}>
+          {`${x}x${y}`}
+        </div>
+      ))}
+    </div>
+  ))}
+</div>
 ```
 Komponent będzie posiadał własne style, więc obok stwórzmy też plik `GameGrid.css`.
 ```shell script
@@ -103,49 +172,11 @@ Dodać import arkusza styli w pliku z komponentem.
 ```js
 import './GameGrid.css';
 ```
-Komponent `GameGrid` powinien przyjmować jeden prop: `gridSize`.\
-Deklaracja powinna wyglądać jak poniżej:
-```jsx
-export default function GameGrid({ gridSize }) {
-  return <></>;
-}
-```
-Następnie wewnątrz komponentu należy stworzyć tablicę zawierającą indeksy wierszy i komórek w wierszach.\
-Ponieważ ilość wierszy jest równa ilości komórek w wierszu, wykorzystamy tablicę z indeksami do stworzenia wierszy i komórek wewnątrz.\
-Tablica z indeksami powinna zawierać `gridSize` elementów.\
-Aby utworzyć tablicę, możemy wykorzystać funkcję `Array.from`.\
-Jako argument przekazujemy obiekt z jednym kluczem `length` i wartości `gridSize`.\
-Wynikiem będzie tablica z pustymi elementami.
-Następnie należy przeiterować się po utworzonej tablicy i wykorzystać podczas iteracji drugi argument, który reprezentuje indeks aktualnie iterowanego elementu do wypełnienia elementów tablicy.
-```js
-const indexes = Array
-    .from({ length: gridSize })
-    .map((_, index) => index);
-```
-Po utworzeniu tablicy z indeksami możemy stworzyć zawartość siatki.\
-Komponent `GameGrid` zwraca `div`, wewnątrz którego wykonujemy iterację po tablicy indeksów.\
-Dla każdego indeksu tworzymy `div` z klasą `gridRow`.\
-Pamiętać o nadaniu `key` dla każdego wiersza.\
-Każdy wiersz zawiera komórki.\
-Wewnątrz `div` reprezentującego wiersz wykonujemy jeszcze raz iterację po tablicy indeksów.\
-Podczas wewnętrznej iteracji tworzymy `div` z klasą `gridCell`.\
-Pamiętać o nadaniu `key` dla każdej komórki.\
-Każda komórka na razie prezentuje tekst, który jest konkatenacją indeksu wiersza i komórki, połączone znakiem `x`.\
-Efektem działań powinien być kod analogiczny:
-```jsx
-<div>
-  {indexes.map((x) => (
-    <div className="gridRow" key={x}>
-      {indexes.map((y) => (
-        <div className="gridCell" key={`${x}x${y}`}>
-          {`${x}x${y}`}
-        </div>
-      ))}
-    </div>
-  ))}
-</div>
-```
 Tak stworzony komponent możemy wykorzystać w `src/App.js`.\
+Dodaj import komponentu w `src/App.js`.
+```js
+import GameGrid from './game/GameGrid';
+```
 Jednak do dziania siatka gry potrzebuje zdefiniowanego rozmiaru.\
 Dodajmy stałą reprezentującą wielkość siatki w pliku `src/App.js` na poziomie całego pliku, nie wewnątrz komponentu `App`.
 ```js
@@ -157,19 +188,10 @@ return (
   <GameGrid gridSize={GridSize} />
 );
 ```
-Na koniec chcemy dodać pare styli do kontenera aplikacji, aby siatka gry wyświetlała się na środku ekranu.\
-W tym celu otwórzmy plik `index.css` i dodajmy styl dla elementu z id równym `root`.
-```css
-#root {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-}
-```
 W efekcie powinniśmy zobaczyć na ekranie przeglądarki wyśrodkowany kwadrat z szarym obramowaniem, wewnątrz którego jest wyświetlona siatka.
 
 ### Wyświetlanie węża i owocu
+
 Kolejnym zadaniem jest wyświetlenie węża i owocu na siatce.\
 W tym celu wykorzystamy pierwszy hook `useState`.\
 Pozwala on przechowywać stan komponentu i go zmieniać.\
@@ -184,10 +206,14 @@ const [state, setState] = useState(init);
 ```
 Dodajemy import `useState` do istniejącego importu Reacta.\
 Wykorzystamy ten hook to przechowywania pozycji węża i owocu.\
-Stany te zdefiniujemy w komponencie `App`;\
+Stany te zdefiniujemy w komponencie `App`.\
 Osobny stan dla pozycji węża i osobny dla pozycji owocu.\
-Inicjalna pozycja węża powinna być gdzieś w środku siatki.\
-Natomiast pozycja owocu powinna być losowa.
+Inicjalna pozycja węża powinna być w środku siatki.\
+Początkowo wąż składa się z trzech elementów.\
+Każdy z elementów to obiekt reprezentujący punkt na siatce.\
+Obiekt reprezentujący punkt posiada pola: `x` oraz `y`.\
+Inicjalna pozycja owocu powinna być losowa.\
+Owoc jest pojedynczym punktem na siatce.
 ```js
 const [snake, setSnake] = useState([
     { x: GridSize / 2, y: GridSize / 2 },
@@ -245,6 +271,10 @@ Po przygotowaniu wszystkiego, zamieniamy `div` reprezentujący komórkę na:
 />
 ```
 
+#### Zadania dodatkowe
+* Zadbać, aby owoc nie mógł zostać wylosowany w pozycji aktualnie zajmowanej przez węża.
+* Wyróżnij stylami głowę węża.
+
 ### Pętla gry i ruch węża
 
 Kolejną rzeczą, jaką dodamy, jest ruch węża.\
@@ -253,20 +283,13 @@ W tym celu wykorzystamy kolejny hook o nazwie `useEffect`.\
 Służy on do obsługi zdarzeń, które powodują, tak zwane „efekty".\
 Efektem jest taki fragment kodu, który modyfikuje w jakiś sposób stan aplikacji.\
 W przypadku naszej aplikacji efektem będzie tick gry.\
+Przez tick rozumiemy pojedynczą klatkę gry, czyli odświeżenie.\
 Gra działa w określonej prędkości.\
-Co jakiś czas, chcemy obliczyć nową pozycję węża.\
-`useEffect` przyjmuje dwa argumenty.\
+Co jakiś czas, chcemy obliczyć nową pozycję węża.
+
+Hook `useEffect` przyjmuje dwa argumenty.\
 Pierwszy to funkcja bez argumentów, która reprezentuje kod efektu.\
 Drugi to tablica zależności efektu.\
-Efekt jest odpalany zawsze inicjalne oraz gdy jakikolwiek z elementów tablicy zależności się zmienił.\
-W naszej aplikacji chcemy, aby co określony czas nasz efekt się wykonał i zaktualizował pozycję węża.\
-Będziemy potrzebować po pierwsze określić prędkość i kierunek ruchu węża.\
-Zdefiniujmy na poziomie komponentu `App` dwie stałe reprezentujące te dane:
-```js
-const direction = 'up';
-const speed = 500;
-```
-Następnie dodajemy import `useEffect` do istniejącego importu Reacta i wykorzystujemy go wewnątrz komponentu `App`.
 ```js
 useEffect(() => {
     // kod efektu
@@ -275,6 +298,15 @@ useEffect(() => {
     // lista zależności
 ]);
 ```
+Efekt jest odpalany zawsze inicjalne oraz gdy jakikolwiek z elementów tablicy zależności się zmienił.\
+W naszej aplikacji chcemy, aby co określony czas nasz efekt się wykonał i zaktualizował pozycję węża.\
+Będziemy potrzebować po pierwsze określić prędkość i kierunek ruchu węża.\
+Zdefiniujmy na poziomie komponentu `App` dwie stałe reprezentujące te dane:
+```js
+const direction = 'up';
+const speed = 500;
+```
+Następnie dodajemy import `useEffect` do istniejącego importu Reacta i wykorzystujemy go wewnątrz komponentu `App`.\
 Zależnością naszego efektu będzie pozycja węża.\
 Następnie wewnątrz efektu, chcemy stworzyć interwał, który będzie odpalał się w odstępach, które reprezentuje stała `speed` (jest to czas w ms pomiędzy kolejnymi wyliczeniami pozycji węża).
 ```js
@@ -327,6 +359,9 @@ Sprawdź w przeglądarce działanie aplikacji.\
 Wąż powinien poruszać się w kierunku określonym w stałej `direction`;\
 Przetestuj ruch we wszystkich kierunkach zmieniając wartość stałej `direction`.
 
+#### Zadanie dodatkowe
+* Wykryj wyjście poza ekran — w reakcji możesz resetować stan gry do inicjalnego.
+
 ### Zmiana kierunku ruchu węża
 
 Następnym zadaniem jest obsługa zmiany kierunku ruchu węża w odpowiedzi na wciśnięcie na klawiaturze strzałek.\
@@ -335,6 +370,11 @@ W tym celu wykorzystamy kolejny hook `useRef`.\
 Jest to hook pozwalający przechowywać dane, analogicznie jak `useState`, z tą różnicą, że zmiana wartości nie będzie powodować przerenderowania aplikacji.\
 Wartość zmiennej przechowywanej przez `useRef` możemy zmienić przez referencję.\
 Hook `useRef` zwraca jedną wartość, jest to obiekt z pojedynczym polem `current`, w którym jest dostępna aktualnie przechowywana wartość.\
+```js
+const mutableValue = useRef(initialValue);
+// ...
+mutableValue.current = newValue;
+```
 W naszej aplikacji wykorzystanie `useState` do obsługi zmiany kierunku, powodowałoby, że po wciśnięciu strzałki od razu nastąpiłoby odświeżenie pozycji węża z nowym kierunkiem.\
 Dodajemy import `useRef` do istniejącego importu Reacta.\
 Rozpoczniemy od zmiany stałej `direction`, tak aby jej wartość była przechowywana jako zmienna przez hook `useRef`.
@@ -361,10 +401,14 @@ function handleKeyDown(event) {
   // ustalenie jaki klawisz został wciśnięty i zmiana odpowiednio wartości `direction.current`
 }
 ```
-Wewnątrz funkcji w zależności od tego, jaka strzałka została wciśnięta, chcemy mieć odpowiednio kierunek ruchu węża.\
-Po zaimplementowaniu tej funkcji, sprawdź aplikację w przeglądarce.\
+Wewnątrz funkcji w zależności od tego, jaka strzałka została wciśnięta, chcemy odpowiednio zmodyfikować kierunek ruchu węża.\
+Po zaimplementowaniu tej funkcji, sprawdź aplikację w przeglądarce, wąż powinien reagować na wciśnięcie strzałek.\
+
+#### Zadania dodatkowe
+* Zadbaj, aby wąż, gdy trafi na własne ciało, gra to obsługiwała — może być reset stanu analogicznie jak przy kontakcie ze ścianą. Dla ułatwienia dodaj więcej elementów do węża inicjalnie.
 
 ### Zjadanie owocu i zwiększanie prędkości
+
 Kolejną funkcjonalnością, jaką dodamy, jest możliwość zjedzenia owocu.\
 Po zjedzeniu owocu, owoc powinien pojawić się w nowym losowym miejscu.\
 Długość węża wzrasta o 1 po zjedzeniu owocu.\
@@ -378,7 +422,7 @@ Następnie stałą `speed` zamienimy na stan wykorzystując `useState`:
 const [speed, setSpeed] = useState(500);
 ```
 Teraz w efekcie odpowiedzialnym za aktualizacją pozycji węża, dodamy sprawdzenie, czy nowa głowa nie jest w tej samej pozycji co owoc.\
-Jeśli jest, wiemy, że wąż właśnie zjadł owoc.\
+Jeśli owoc jest na tej samej pozycji do głowa węża, wiemy, że wąż właśnie zjadł owoc.\
 Wartość tego wyliczenia przypiszemy do stałej:
 ```js
 const fruitEaten = fruit.x === newSnakeHead.x && fruit.y === newSnakeHead.y;
@@ -390,11 +434,19 @@ Na koniec zostaje nam dodanie nowego elementu węża w przypadku gdy zjadł owoc
 Aktualnie podczas zmiany pozycji węża, po dodaniu nowej głowy, skracamy węża o jeden element (ostatni).\
 W przypadku gdy wąż zje owoc, po prostu nie skracamy węża po dodaniu nowej głowy.
 
+#### Zadanie dodatkowe
+* Dodaj bardziej płynną zmiannę prędkości. Aktalnie gra przyszpiesza dosyć szybko. Wymyśl własny wzór na obliczanie prędkości. Wzór może bazowac na długości węża.
+
 ### Wydzielenie logiki gry do własnego hooka
 
 Największą zaletą hooków jest możliwość tworzenia własnych hooków.\
 Dzięki temu enkapsulacja oraz reużywalność kodu jest o wiele łatwiejsza i przyjemniejsza.\
 Każdy hook musi zachować odpowiednie nazewnictwo, czyli zaczynać się od prefixa `use`.\
+```js
+function useCustomHook(args) {
+  // logika hooka
+}
+```
 Pierwszym hookiem, jakiego stworzymy będzie hook `useGame`.\
 Hook ten będzie zawierał całą logikę naszej gry.\
 Dzięki temu kompletnie oddzielimy szablon od logiki.\
@@ -423,7 +475,8 @@ Po prawidłowo przeprowadzonej operacji aplikacja powinna działać bez zmian.
 Kolejną właściwością hooków jest możliwość kompozycji logiki.\
 Nasz główny hook, przechowujący logikę gry posiada wymieszaną logikę.\
 Wydzielimy z niego kod reprezentujący pętlę gry oraz obsługę zmiany kierunku.\
-W tym celu utworzymy dwa nowe hooki i wykorzystamy je wewnątrz hooka `useGame`.\
+W tym celu utworzymy dwa nowe hooki i wykorzystamy je wewnątrz hooka `useGame`.
+
 Pierwszym będzie hook `useGameDirection`.\
 Utwórz w folderze `game` plik o nazwie `useGameDirection.js`.\
 Plik ten eksportuje domyślnie jedną funkcję o nazwie `useGameDirection`.\
@@ -434,7 +487,8 @@ return direction.current;
 ```
 Wykorzystaj hook w `useGame`.\
 Zwróć uwagę, że hook `useDirection` nie zwraca obiektu z kluczem `current` tylko płasko aktualny kierunek.\
-Popraw odpowiednio kod w `useGame`.\
+Popraw odpowiednio kod w `useGame`.
+
 Następnie utwórz plik `useGameLoop`.\
 Wydzielimy do niego logikę związaną z pętlą gry.\
 Plik jak każdy inny hook, eksportuje domyślnie funkcję o nazwie `useGameLoop`.\
@@ -467,7 +521,7 @@ Kontekst zawsze występuje w parze.\
 Pierwszym elementem jest tak zwany `Provider`, odpowiedzialny na przechowywanie danych, które będę udostępnione komponentom pochodnym.\
 Drugi jest tak zwany `Consumer`. Ten występuje w 2 postaciach: komponentu oraz hooka.\
 Podczas warsztatów wykorzystamy `Consumer` w postaci hooka.\
-W naszej aplikacji wydzielimy 2 dane jako kontekst aplikacji: prędkość gry oraz wielkość siatki.\
+W naszej aplikacji wydzielimy dwie dane jako kontekst aplikacji: prędkość gry oraz wielkość siatki.\
 Zaczniemy od utworzenie pliku `GameContext.js`, w którym zdefiniujemy nowy kontekst.\
 Do stworzenia kontekstu potrzebna jest funkcja pomocnicza z biblioteki `React` o nazwie `createContext`.\
 Funkcja przyjmuje jeden argument, który reprezentuje inicjalny stan kontekstu.
