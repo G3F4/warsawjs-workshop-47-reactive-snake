@@ -1,4 +1,4 @@
-import { useContext, useState } from 'react';
+import { useContext, useLayoutEffect, useState } from 'react';
 import useGameDirection from './useGameDirection';
 import useGameLoop from './useGameLoop';
 import GameContext from './GameContext';
@@ -54,6 +54,11 @@ export default function useGame() {
   }
 
   useGameLoop({ speed, onTick: handleGameTick });
+
+  useLayoutEffect(() => {
+    const fruitEl = document.querySelector('.fruitCell');
+    fruitEl.style = 'transition: transform 0.5s;transform: rotate3d(1, 1, 1, 360deg);';
+  }, [fruit]);
 
   return { fruit, snake };
 }

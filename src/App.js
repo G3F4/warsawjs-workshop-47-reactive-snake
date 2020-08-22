@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import GameContext from './game/GameContext';
 import Game from './game/Game';
 
@@ -9,17 +9,17 @@ function App() {
   const [speed, setSpeed] = useState(500);
   const [paused, setPaused] = useState(true);
 
-  function increaseSpeed() {
-    setSpeed(speed * SpeedMultiplier);
-  }
+  const increaseSpeed = useCallback(() => {
+    setSpeed(s => s * SpeedMultiplier);
+  }, []);
 
-  function pauseGame() {
+  const pauseGame = useCallback(() => {
     setPaused(true);
-  }
+  }, []);
 
-  function unpauseGame() {
+  const unpauseGame = useCallback(() => {
     setPaused(false);
-  }
+  }, []);
 
   return (
     <GameContext.Provider value={{ speed, gridSize: GridSize, paused, increaseSpeed, pauseGame, unpauseGame }}>

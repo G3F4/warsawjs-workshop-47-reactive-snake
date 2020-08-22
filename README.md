@@ -9,6 +9,9 @@ Poznamy następujące zagadnienia:
 * hook `useEffect` - do obsługi efektów oraz synchronizacji
 * hook `useRef` - do obsługi zmiennych wartości
 * hook `useContext` - do obsługi kontekstu
+* hook `useCallback` - do memoizacji funckji
+* hook `useMemo` - do memoizacji wartości
+* hook `useLayoutEffect` - do obsługi efektów wymagających wyrenderowanych elementów HTML
 * pisanie własnych hooków
 * kompozycja hooków
 
@@ -666,6 +669,65 @@ Hook jako argument czeka na handler, który zostanie wywołany w przypadku gdy z
 Wywołujemy hook na poziomie `useGame`.\
 Ostatnią rzeczą jest zablokowanie ruchu węża, gdy stan gry to pauza.\
 W tym celu owrapuj logikę porusza węża w `if` gdzie warunkiem jest to czy gra jest niezapuzowana.
+
+### Małe usprawnienia dzięki kolejnych hookom
+
+Na koniec poznamy jeszcze trzy hooki na bazie małych przykładów usprawniających kod aplikacji.\
+Zaczniemy od dodania efektu animacji owocu po pojawieniu się na siatce.\
+W tym celu wykorzystamy hook `useLayoutEffect`.\
+Od zwykłego hooka `useEffect` różni się tym że jest wywoływany po tym jak zmiany w drzewie DOM zostaną wykonane.\
+Dzięki temu możemy powyrenderowaniu strony wpłynąć jakoś na strukturę HTML dokumentu.
+```js
+useLayoutEffect(() => {
+    // kod efektu wykorzystującego wyrenderowany dokument
+}, [
+  // zależności
+]);
+```
+
+W naszym przypadku będziemy wpływać na `div`, w którym aktualnie jest wyrenderowana głowa węża.\
+W hooku `useGame` wykorzystajmy `useLayoutEffect`.\
+Jego składnia jest analogiczna do `useEffect`.\
+W ciele efektu znajdź element z klasą `fruitCell`.\
+Do znalezienia elementu wykorzystaj `document.querySelector`.\
+Zmodyfikuj style elementu poniższym:
+```css
+transition: transform 0.5s;transform: rotate3d(1, 1, 1, 360deg);
+```
+Zależnością efektu powinien być stan owocu.
+
+Kolejną rzeczą, którą poprawimy będzie nadmiarowe odświeżanie kontekstu powodowane przekazywaniem do niej każdorazowo tworzonych funkcji.
+W pliku `App.js` tworzymy funkcje: `increaseSpeed`, `pauseGame`, `unpauseGame` za każdym razem.\
+Powoduje to, że każdorazowo jest też tworzony kontekst.\
+W przypadku naszej aplikacji jest to optymalizacja czysto dla sztuki.\
+
+Aby rozwiązać ten problem, wykorzystamy kolejny hook `useCallback`.\
+Czeka na dwa argumenty.\
+Pierwszy to funkcja, którą chcemy zmemoizować.\
+Drugi to tablica zależności, po których zmianie zmemoizowana funkcja zostanie ponownie stworzona i zmemoizowana.\
+Zwraca zmemoizowaną funckję.\
+```js
+const memoizedFunction = useCallback(() => {
+    // kod
+}, [
+  // zależności
+]);
+```
+Wykorzystaj `useCallback` do zmemoizowania funkcji tworzonych w komponencie `App`.
+
+Ostatnią mini optymalizacją na potrzeby poznania kolejnego hooka będzie zmemoizowanie wyliczania tablicy indeksów w komponencie `GameGrid`.
+Wykorzystamy do tego hook `useMemo`.\
+Pierwszy to funkcja, którą chcemy zmemoizować.\
+Drugi to tablica zależności, po których zmianie zmemoizowana funkcja zostanie ponownie stworzona i zmemoizowana.\
+Zwraca zmemoizowaną wartość.\
+```js
+const memoizedValue = useMemo(() => {
+  // funkcja zwracająca wartość do zmemoizowania
+}, [
+  // zależności
+]);
+```
+Wykorzystaj `useMemo` do memoizacji wyliczenia indeksów w komponencie `GameGrid`.
 
 ### Zadanie dodatkowe
 * Dodać w menu opcję rozpoczynania gry od nowa
