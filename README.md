@@ -12,6 +12,7 @@ Poznamy następujące zagadnienia:
 * hook `useCallback` - do memoizacji funckji
 * hook `useMemo` - do memoizacji wartości
 * hook `useLayoutEffect` - do obsługi efektów wymagających wyrenderowanych elementów HTML
+* hook `useReducer` - do obsługi skomplikowanych stanów aplikacji
 * pisanie własnych hooków
 * kompozycja hooków
 
@@ -728,6 +729,97 @@ const memoizedValue = useMemo(() => {
 ]);
 ```
 Wykorzystaj `useMemo` do memoizacji wyliczenia indeksów w komponencie `GameGrid`.
+
+### Obsługa stanu kontekstu gry z wykorzystaniem reducera
+
+Ostatnim hookiem, jaki poznamy jest `useReducer`.\
+Służy do obsługi skomplikowanych stanów aplikacji.\
+Posiada API analogiczne do biblioteki `Redux`.\
+Hook czeka na trzy argumenty.\
+Pierwszy to funkcja redukująca stan w odpowiedzi na akcję — inaczej reducer.\
+Drugi to obiekt reprezentujący inicjalny stan.\
+Trzeci to funkcja zwracająca stan inicjalny.\
+Zwraca tablicę z dwoma argumentami:\
+Pierwszy element to aktualny stan.\
+Drugi element to funkcja do wywoływania akcji na reducerze.
+```js
+const initialState = { count: 0 };
+
+function reducer(state, action) {
+  switch (action.type) {
+    case 'increment':
+      return { count: state.count + 1 };
+    case 'decrement':
+      return { count: state.count - 1 };
+    default:
+      throw new Error();
+  }
+}
+
+function Counter() {
+  const [state, dispatch] = useReducer(reducer, initialState);
+  return (
+    <>
+      Licznik: {state.count}
+      <button onClick={() => dispatch({ type: 'decrement' })}>-</button>
+      <button onClick={() => dispatch({ type: 'increment' })}>+</button>
+    </>
+  );
+}
+```
+
+Stwórz plik `gameContextStateReducer`.\
+Plik będzie domyślnie eksportował funkcję reducera.\
+Funkcja reducera posiada dwa argumenty.\
+Pierwszy to aktualny stan reducera.\
+Drugi to obiekt reprezentujący akcję, która została wysłana do reducera.\
+Obiekt akcji posiada dwa pola: `type` oraz `payload`.\
+Funckja zwraca nowy stan.\
+Wykorzystując przykład stwórz reducer, który będzie obsługiwał trzy akcje:
+* `increaseSpeed` - po wywołaniu, której zostanie zwiększona prędkość gry
+* `pauseGame` - po wywołaniu, której gra zostanie zatrzymana
+* `unpauseGame` - po wywołaniu, której gra zostanie wznowiona
+
+Następnie zmodyfikuj komponent `App`, aby korzystał ze stworzonego reducera.\
+Kod wynikowy komponentu `App` powinien być analogiczny do poniższego:
+```jsx
+import React, { useCallback, useReducer } from 'react';
+import GameContext from './game/GameContext';
+import Game from './game/Game';
+import gameContextStateReducer, { initGameContextState, InitialGameContextState } from './game/gameContextStateReducer';
+
+const GridSize = 10;
+const SpeedMultiplier = 0.8;
+
+function App() {
+  const [gameContextState, dispatchGameContextAction] = useReducer(
+    gameContextStateReducer,
+    InitialGameContextState,
+    initGameContextState,
+  );
+  const { paused, speed } = gameContextState;
+
+  const increaseSpeed = useCallback(() => {
+    dispatchGameContextAction({ type: 'increaseSpeed', payload: SpeedMultiplier });
+  }, []);
+
+  const pauseGame = useCallback(() => {
+    dispatchGameContextAction({ type: 'pauseGame' });
+  }, []);
+
+  const unpauseGame = useCallback(() => {
+    dispatchGameContextAction({ type: 'unpauseGame' });
+  }, []);
+
+  return (
+    <GameContext.Provider value={{ speed, gridSize: GridSize, paused, increaseSpeed, pauseGame, unpauseGame }}>
+      <Game/>
+    </GameContext.Provider>
+  );
+}
+
+export default App;
+```
 
 ### Zadanie dodatkowe
 * Dodać w menu opcję rozpoczynania gry od nowa

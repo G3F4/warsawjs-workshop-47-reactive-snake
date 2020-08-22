@@ -1,29 +1,34 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useReducer } from 'react';
 import GameContext from './game/GameContext';
 import Game from './game/Game';
+import gameContextStateReducer, { initGameContextState, InitialGameContextState } from './game/gameContextStateReducer';
 
 const GridSize = 10;
 const SpeedMultiplier = 0.8;
 
 function App() {
-  const [speed, setSpeed] = useState(500);
-  const [paused, setPaused] = useState(true);
+  const [gameContextState, dispatchGameContextAction] = useReducer(
+    gameContextStateReducer,
+    InitialGameContextState,
+    initGameContextState,
+  );
+  const { paused, speed } = gameContextState;
 
   const increaseSpeed = useCallback(() => {
-    setSpeed(s => s * SpeedMultiplier);
+    dispatchGameContextAction({ type: 'increaseSpeed', payload: SpeedMultiplier });
   }, []);
 
   const pauseGame = useCallback(() => {
-    setPaused(true);
+    dispatchGameContextAction({ type: 'pauseGame' });
   }, []);
 
   const unpauseGame = useCallback(() => {
-    setPaused(false);
+    dispatchGameContextAction({ type: 'unpauseGame' });
   }, []);
 
   return (
     <GameContext.Provider value={{ speed, gridSize: GridSize, paused, increaseSpeed, pauseGame, unpauseGame }}>
-      <Game />
+      <Game/>
     </GameContext.Provider>
   );
 }
