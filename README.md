@@ -843,3 +843,6 @@ Po chwili aplikacja powinna być dostępna pod adresem podanym w polu `homepage`
 ### Zadanie dodatkowe
 * Dodać w menu opcję rozpoczynania gry od nowa
 * Dodać punktację
+* Dodać możliwość zmiany rozmiaru siatki — opcja w menu?
+* Dodać animację ruchu węża — płynne przesuwanie głowy i ogonu
+* Dodać poziomy gry — co pewną ilość zjedzonych owoców zmienia się kolorystyka gry, co nam da wrażenie, że zmienił się poziom gry
