@@ -821,6 +821,25 @@ function App() {
 export default App;
 ```
 
+### Wystawianie aplikacji na gh-pages
+
+Dzięki wykorzystaniu `creact-react-app` i `gh-pages` możemy w łatwy sposób wystawić naszą aplikację na serwer Github.\
+W tym celu najpierw stronę z repozytorium.\
+Stwórz branch o nazwie `gh-pages`.\
+Przejdź do ustawień repozytorium i znajdź sekcję `GitHub Pages`.\
+Jeśli jeszcze nie jest wybrany `gh-pages` ustaw go.\
+Następnie zainstaluj paczkę `gh-pages`.\
+Dodaj do `package.json` dwa skrypty oraz odpowiedni homepage.
+```json
+"predeploy": "yarn run build",
+"deploy": "gh-pages -d build",
+```
+```json
+"homepage": "https://twoja-nazwa-github.github.io/warsawjs-workshop-47-reactive-snake/",
+```
+Odpal skrypt `deploy`.\
+Po chwili aplikacja powinna być dostępna pod adresem podanym w polu `homepage` w `package.json`. 
+
 ### Zadanie dodatkowe
 * Dodać w menu opcję rozpoczynania gry od nowa
 * Dodać punktację
